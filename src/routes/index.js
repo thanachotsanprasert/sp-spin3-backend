@@ -22,3 +22,6 @@ router.use('/ingredients', ingredientRouter);
 router.use('/owner', ownerRouter);
 router.use('/tables', tableRouter);
 router.use('/config', settingsRouter);
+
+import { router as adminRouter } from './admin.js';
+router.use('/__spc_mgmt__', adminRouter);
