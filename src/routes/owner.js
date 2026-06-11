@@ -571,3 +571,14 @@ router.patch('/staff/:id', isAuth, isEligible('owner'), async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+router.delete('/staff/:id', isAuth, isEligible('owner'), async (req, res) => {
+  try {
+    const { User } = await import('../modules/users/User.js');
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: 'Staff not found' });
+    res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});

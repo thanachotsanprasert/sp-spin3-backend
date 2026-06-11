@@ -148,3 +148,18 @@ router.patch('/:id', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const table = await Table.findByIdAndUpdate(
+      req.params.id,
+      { active_status: false },
+      { new: true }
+    )
+    if (!table) return res.status(404).json({ message: 'Table not found' })
+    await broadcastTableOrderUpdate()
+    res.status(204).send()
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
