@@ -41,6 +41,21 @@ router.put('/:id/lots/:lotId', kitchenStockAccess, updateIngredientLot);
 // DELETE a specific lot
 router.delete('/:id/lots/:lotId', kitchenStockAccess, deleteIngredientLot);
 
+router.delete('/:id', kitchenStockAccess, async (req, res) => {
+  try {
+    const { Ingredient } = await import('../modules/ingredients/Ingredient.js')
+    const ingredient = await Ingredient.findByIdAndUpdate(
+      req.params.id,
+      { active_status: false },
+      { new: true }
+    )
+    if (!ingredient) return res.status(404).json({ message: 'Ingredient not found' })
+    res.status(204).send()
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
 // GET ingredients grouped by status (in_stock, low_stock, out_of_stock) - COOK BOARD
 router.get('/status/board', kitchenStockAccess, getIngredientsByStatus);
 
