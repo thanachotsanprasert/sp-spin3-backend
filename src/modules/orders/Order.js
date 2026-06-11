@@ -77,6 +77,20 @@ orderSchema.index({ type: 1, status: 1, createdAt: -1 });
 orderSchema.virtual('items').get(function () {
   return this.orderList;
 });
+
+orderSchema.virtual('total').get(function () {
+  const CANCELLED = new Set(['cancel', 'cancelled'])
+  const items = Array.isArray(this.orderList) ? this.orderList : []
+  const subtotal = items.reduce((sum, item) => {
+    if (CANCELLED.has(item?.status)) return sum
+    const qty = Number(item?.quantity) || 1
+    const price = Number(item?.price ?? item?.price_at_purchase ?? 0)
+    return sum + price * qty
+  }, 0)
+  const tax = subtotal * 0.07
+  return Math.round((subtotal + tax) * 100) / 100
+})
+
 orderSchema.set('toJSON', { virtuals: true });
 orderSchema.set('toObject', { virtuals: true });
 
