@@ -64,6 +64,7 @@ const getOrderTotal = (order) => {
 
 const toOwnerOrder = (order) => ({
   id: String(order._id),
+  orderId: order.orderId || null,
   type: toOwnerOrderType(order.type),
   status: toOwnerOrderStatus(order.status),
   items: (order.orderList || []).map((item) => ({
